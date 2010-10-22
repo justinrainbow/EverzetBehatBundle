@@ -11,7 +11,7 @@ See [Behat official site](http://everzet.com/Behat) for more info.
 
 ## Installation
 
-### Add DoctrineUserBundle to your src/Bundle dir
+### Add Everzet\BehatBundle to your src/Bundle dir
 
     git submodule add git://github.com/everzet/EverzetBehatBundle.git src/Bundle/Everzet/BehatBundle
 
@@ -33,7 +33,7 @@ GitHub and copy `src/Symfony/Component/Translation` directory inside your local 
         // ...
     ));
 
-### Add DoctrineUserBundle to your application kernel
+### Add EverzetBehatBundle to your application kernel
 
     // app/AppKernel.php
     public function registerBundles()
