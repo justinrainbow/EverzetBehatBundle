@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsd:schema xmlns="http://everzet.com/schema/dic/behat"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://everzet.com/schema/dic/behat"
+    elementFormDefault="qualified">
+
+    <xsd:element name="behat.config">
+        <xsd:complexType>
+            <xsd:attribute name="formatter" type="xsd:string" />
+            <xsd:attribute name="colors" type="xsd:boolean" />
+            <xsd:attribute name="locale" type="xsd:string" />
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
