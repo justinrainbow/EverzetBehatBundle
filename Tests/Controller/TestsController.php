@@ -1,6 +1,6 @@
 <?php
 
-namespace Bundle\Everzet\BehatBundle\Controller;
+namespace Bundle\Everzet\BehatBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -21,7 +21,7 @@ class TestsController extends Controller
 {
     public function pageAction($page)
     {
-        return $this->render('Everzet\\BehatBundle:Tests:page', array(
+        return $this->render('Everzet\\BehatBundle\\Tests:Tests:page', array(
             'page' => preg_replace('/page(\d+)/', 'Page #\\1', $page)
         ));
     }
@@ -33,14 +33,14 @@ class TestsController extends Controller
 
     public function formAction()
     {
-        return $this->render('Everzet\\BehatBundle:Tests:form');
+        return $this->render('Everzet\\BehatBundle\\Tests:Tests:form');
     }
 
     public function submitAction()
     {
         $data = $this['request']->request->all();
 
-        return $this->render('Everzet\\BehatBundle:Tests:submit', array(
+        return $this->render('Everzet\\BehatBundle\\Tests:Tests:submit', array(
             'method'        => $this['request']->getMethod()
           , 'name'          => $data['name']
           , 'age'           => $data['age']
