@@ -22,7 +22,6 @@ use Everzet\Behat\Environment\WorldEnvironment;
  */
 class SymfonyBrowserEnvironment extends WorldEnvironment
 {
-    public $client;
     protected $kernel;
 
     /**
@@ -34,11 +33,18 @@ class SymfonyBrowserEnvironment extends WorldEnvironment
      */
     public function __construct($container, array $kernelOptions = array(), array $serverParameters = array())
     {
-        $this->client = $this->createClient(
-            get_class($container->getKernelService())
-          , $kernelOptions
-          , $serverParameters
-        );
+        $world = $this;
+        $class = get_class($container->getKernelService());
+
+        $this->getClient = function() use ($world, $class, $kernelOptions, $serverParameters) {
+            static $client;
+
+            if (null === $client) {
+                $client = $world->createClient($class, $kernelOptions, $serverParameters);
+            }
+
+            return $client;
+        };
 
         $this->pathTo = function($page) {
             switch ($page) {

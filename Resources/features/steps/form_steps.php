@@ -30,6 +30,6 @@ $steps->When('/^I attach the file at "([^"]*)" to "([^"]*)"$/', function($world,
 
 $steps->When('/^I press "([^"]*)" in (.*) form$/', function($world, $button, $formName) {
     $form = $world->crawler->selectButton($button)->form();
-    $world->crawler = $world->client->submit($form, $world->inputFields);
+    $world->crawler = $world->getClient()->submit($form, $world->inputFields);
     $world->inputFields = array();
 });

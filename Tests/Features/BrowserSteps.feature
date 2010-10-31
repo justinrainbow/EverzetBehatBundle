@@ -59,7 +59,7 @@ Feature: Browser Steps
       
       01. The current node list is empty.
           In step `When I click "p100" link'. # features/steps/browser_steps.php:22
-          From scenario `Unexistent click'.   # features/browser.feature:23
+          From scenario `Unexistent click'.   # features/browser.feature:24
       
       6 scenarios (5 passed, 1 failed)
       29 steps (27 passed, 1 skipped, 1 failed)
@@ -93,7 +93,7 @@ Feature: Browser Steps
       
       01. The request was not redirected.
           In step `When I follow redirect'. # features/steps/browser_steps.php:38
-          From scenario ***.                # features/redirect.feature:6
+          From scenario ***.                # features/redirect.feature:7
       
       2 scenarios (1 passed, 1 failed)
       8 steps (6 passed, 1 skipped, 1 failed)

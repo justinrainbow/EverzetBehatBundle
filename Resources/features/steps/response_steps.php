@@ -9,15 +9,15 @@
  */
 
 $steps->Then('/^Response status code is (\d+)$/', function($world, $code) {
-    assertEquals($code, $world->client->getResponse()->getStatusCode());
+    assertEquals($code, $world->getClient()->getResponse()->getStatusCode());
 });
 
 $steps->Then('/^I should see "([^"]*)"$/', function($world, $text) {
-    assertRegExp('/' . $text . '/', $world->client->getResponse()->getContent());
+    assertRegExp('/' . $text . '/', $world->getClient()->getResponse()->getContent());
 });
 
 $steps->Then('/^I should not see "([^"]*)"$/', function($world, $text) {
-    assertNotRegExp('/' . $text . '/', $world->client->getResponse()->getContent());
+    assertNotRegExp('/' . $text . '/', $world->getClient()->getResponse()->getContent());
 });
 
 $steps->Then('/^I should see element "([^"]*)"$/', function($world, $css) {
@@ -25,23 +25,23 @@ $steps->Then('/^I should see element "([^"]*)"$/', function($world, $css) {
 });
 
 $steps->Then('/^Header "([^"]*)" is set to "([^"]*)"$/', function($world, $key, $value) {
-    assertTrue($world->client->getResponse()->headers->has($key));
-    assertEquals($value, $world->client->getResponse()->headers->get($key));
+    assertTrue($world->getClient()->getResponse()->headers->has($key));
+    assertEquals($value, $world->getClient()->getResponse()->headers->get($key));
 });
 
 $steps->Then('/^Header "([^"]*)" is not set to "([^"]*)"$/', function($world, $key, $value) {
-    assertTrue($world->client->getResponse()->headers->has($key));
-    assertNotEquals($value, $world->client->getResponse()->headers->get($key));
+    assertTrue($world->getClient()->getResponse()->headers->has($key));
+    assertNotEquals($value, $world->getClient()->getResponse()->headers->get($key));
 });
 
 $steps->Then('/^I was redirected$/', function($world) {
-    assertTrue($world->client->getResponse()->isRedirection());
+    assertTrue($world->getClient()->getResponse()->isRedirection());
 });
 
 $steps->Then('/^I was not redirected$/', function($world) {
-    assertFalse($world->client->getResponse()->isRedirection());
+    assertFalse($world->getClient()->getResponse()->isRedirection());
 });
 
 $steps->Then('/^Print output$/', function($world) {
-    $world->printDebug($world->client->getResponse()->getContent());
+    $world->printDebug($world->getClient()->getResponse()->getContent());
 });

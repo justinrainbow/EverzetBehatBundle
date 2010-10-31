@@ -2,7 +2,7 @@
 
 $steps->Given('/^basic BehatBundle environment$/', function($world) {
     $world->path = sys_get_temp_dir() . '/BehatBundle/features';
-    $world->root = $world->client->getKernel()->getContainer()->getParameter('kernel.root_dir');
+    $world->root = $world->getClient()->getKernel()->getContainer()->getParameter('kernel.root_dir');
 
     if (!is_dir($world->path)) {
         mkdir($world->path, 0777, true);

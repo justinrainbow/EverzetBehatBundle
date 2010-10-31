@@ -9,17 +9,17 @@
  */
 
 $steps->Then('/^Request method is (.*)$/', function($world, $method) {
-    assertEquals($method, $world->client->getRequest()->getMethod());
+    assertEquals($method, $world->getClient()->getRequest()->getMethod());
 });
 
 $steps->Then('/^Request has cookie "([^"]*)"$/', function($world, $cookie) {
-    assertTrue($world->client->getRequest()->cookies->has($cookie));
+    assertTrue($world->getClient()->getRequest()->cookies->has($cookie));
 });
 
 $steps->Then('/^Request has not cookie "([^"]*)"$/', function($world, $cookie) {
-    assertFalse($world->client->getRequest()->cookies->has($cookie));
+    assertFalse($world->getClient()->getRequest()->cookies->has($cookie));
 });
 
 $steps->Then('/^Request cookie "([^"]*)" is "([^"]*)"$/', function($world, $cookie, $val) {
-    assertEquals($val, $world->client->getRequest()->cookies->get($cookie));
+    assertEquals($val, $world->getClient()->getRequest()->cookies->get($cookie));
 });

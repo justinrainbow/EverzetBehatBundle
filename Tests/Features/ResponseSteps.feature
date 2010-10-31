@@ -51,11 +51,11 @@ Feature: Response Steps
       
       01. Failed asserting that <text> does not match PCRE pattern "/Page #34/".
           In step `And I should not see "Page #34"'. # features/steps/response_steps.php:21
-          From scenario `I should not see'.          # features/response.feature:21
+          From scenario `I should not see'.          # features/response.feature:22
       
       02. Failed asserting that <boolean:false> is true.
           In step `And I should see element "ul > li > a > p"'. # features/steps/response_steps.php:25
-          From scenario `I should see element'.                 # features/response.feature:27
+          From scenario `I should see element'.                 # features/response.feature:28
       
       5 scenarios (3 passed, 2 failed)
       22 steps (20 passed, 2 failed)

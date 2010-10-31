@@ -9,30 +9,30 @@
  */
 
 $steps->Given('/^I am on(?: the)? (.*)$/', function($world, $page) {
-    $world->crawler = $world->client->request('GET', $world->pathTo($page));
+    $world->crawler = $world->getClient()->request('GET', $world->pathTo($page));
 });
 
 $steps->When('/^I go to(?: the)? (.*)$/', function($world, $page) {
-    $world->crawler = $world->client->request('GET', $world->pathTo($page));
+    $world->crawler = $world->getClient()->request('GET', $world->pathTo($page));
 });
 
 $steps->When('/^I (?:follow|click)(?: the)? "([^"]*)"(?: link)*$/', function($world, $link) {
     $link = $world->crawler->selectLink($link)->link();
-    $world->crawler = $world->client->click($link);
+    $world->crawler = $world->getClient()->click($link);
 });
 
 $steps->When('/^I go back$/', function($world) {
-    $world->client->back();
+    $world->getClient()->back();
 });
 
 $steps->When('/^I go forward$/', function($world) {
-    $world->client->forward();
+    $world->getClient()->forward();
 });
 
 $steps->When('/^I send (POST|PUT|DELETE) to (.*) with:$/', function($world, $method, $page, $table) {
-    $world->crawler = $world->client->request($method, $world->pathTo($page), current($table->getHash()));
+    $world->crawler = $world->getClient()->request($method, $world->pathTo($page), current($table->getHash()));
 });
 
 $steps->When('/^I follow redirect$/', function($world) {
-    $world->crawler = $world->client->followRedirect();
+    $world->crawler = $world->getClient()->followRedirect();
 });
