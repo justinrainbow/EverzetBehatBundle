@@ -21,7 +21,7 @@ class TestsController extends Controller
 {
     public function pageAction($page)
     {
-        return $this->render('Everzet\\BehatBundle\\Tests:Tests:page', array(
+        return $this->render('Everzet\\BehatBundle\\Tests:Tests:page.php', array(
             'page' => preg_replace('/page(\d+)/', 'Page #\\1', $page)
         ));
     }
@@ -33,14 +33,14 @@ class TestsController extends Controller
 
     public function formAction()
     {
-        return $this->render('Everzet\\BehatBundle\\Tests:Tests:form');
+        return $this->render('Everzet\\BehatBundle\\Tests:Tests:form.php');
     }
 
     public function submitAction()
     {
         $data = $this['request']->request->all();
 
-        return $this->render('Everzet\\BehatBundle\\Tests:Tests:submit', array(
+        return $this->render('Everzet\\BehatBundle\\Tests:Tests:submit.php', array(
             'method'        => $this['request']->getMethod()
           , 'name'          => $data['name']
           , 'age'           => $data['age']
