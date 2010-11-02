@@ -34,23 +34,31 @@ abstract class TestCommand extends Command
         return array(
             new InputOption('--format',         '-f'
               , InputOption::PARAMETER_REQUIRED
-              , 'Change output formatter'
+              , 'How to format features (Default: pretty). Available formats is pretty, progress, html.'
+            ),
+            new InputOption('--out',            '-o'
+              , InputOption::PARAMETER_REQUIRED
+              , 'Write output to a file/directory instead of STDOUT.'
+            ),
+            new InputOption('--name',           '-N' 
+              , InputOption::PARAMETER_REQUIRED
+              , 'Only execute the feature elements (features or scenarios) which match part of the given name.'
             ),
             new InputOption('--tags',           '-t'
               , InputOption::PARAMETER_REQUIRED
-              , 'Only executes features or scenarios with specified tags'
+              , 'Only execute the features or scenarios with tags matching expression.'
             ),
-            new InputOption('--no-colors',      null
-              , InputOption::PARAMETER_NONE
-              , 'No colors in output'
-            ),
-            new InputOption('--no-time',        null
-              , InputOption::PARAMETER_NONE
-              , 'No timer in output'
-            ),
-            new InputOption('--i18n',           null
+            new InputOption('--i18n',           '-i'
               , InputOption::PARAMETER_REQUIRED
-              , 'Print formatters output in particular language'
+              , 'Print formatters output in particular language.'
+            ),
+            new InputOption('--no-colors',      '-C'
+              , InputOption::PARAMETER_NONE
+              , 'Do not use ANSI color in the output.'
+            ),
+            new InputOption('--no-time',        '-T'
+              , InputOption::PARAMETER_NONE
+              , 'Hide time statistics in output.'
             ),
         );
     }
@@ -63,20 +71,29 @@ abstract class TestCommand extends Command
      */
     protected function configureTestContainer($container, InputInterface $input)
     {
+        if (null !== $input->getOption('name')) {
+            $container->get('behat.name_filter')->setFilterString($input->getOption('name'));
+        }
         if (null !== $input->getOption('tags')) {
-            $container->getBehat_TagFilterService()->setTags($input->getOption('tags'));
+            $container->get('behat.tag_filter')->setFilterString($input->getOption('tags'));
         }
         if (null !== $input->getOption('format')) {
-            $container->getBehat_OutputManagerService()->setFormatter($input->getOption('format'));
+            $container->get('behat.output_manager')->setFormatter($input->getOption('format'));
+        }
+        if (null !== $input->getOption('out')) {
+            $container->get('behat.output_manager')->setOutputPath($input->getOption('out'));
         }
         if (null !== $input->getOption('no-colors')) {
-            $container->getBehat_OutputManagerService()->allowColors(!$input->getOption('no-colors'));
+            $container->get('behat.output_manager')->showColors(!$input->getOption('no-colors'));
         }
         if (null !== $input->getOption('verbose')) {
-            $container->getBehat_OutputManagerService()->beVerbose($input->getOption('verbose'));
+            $container->get('behat.output_manager')->beVerbose($input->getOption('verbose'));
         }
         if (null !== $input->getOption('i18n')) {
-            $container->getBehat_OutputManagerService()->setLocale($input->getOption('i18n'));
+            $container->get('behat.output_manager')->setLocale($input->getOption('i18n'));
+        }
+        if (null !== $input->getOption('no-time')) {
+            $container->get('behat.output_manager')->showTimer(!$input->getOption('no-time'));
         }
     }
 

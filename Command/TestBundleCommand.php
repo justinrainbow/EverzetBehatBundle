@@ -79,10 +79,10 @@ class TestBundleCommand extends TestCommand
         $stepsPaths     = array($featuresPath . '/steps', __DIR__ . '/../Resources/features/steps');
 
         // Set output service
-        $this->container->getBehat_OutputManagerService()->setOutput($output);
+        $this->container->get('behat.output_manager')->setOutput($output);
 
         // Add hooks files paths to container resources list
-        $hooksContainer = $this->container->getBehat_HooksContainerService();
+        $hooksContainer = $this->container->get('behat.hooks_container');
         foreach ($hooksPath as $path) {
             if (is_file($path)) {
                 $hooksContainer->addResource('php', $path);
@@ -90,13 +90,13 @@ class TestBundleCommand extends TestCommand
         }
 
         // Add features paths to container resources list
-        $featuresContainer = $this->container->getBehat_FeaturesContainerService();
+        $featuresContainer = $this->container->get('behat.features_container');
         foreach ($this->findFeatureResources($featuresPath) as $path) {
             $featuresContainer->addResource('gherkin', $path);
         }
 
         // Add definitions files to container resources list
-        $definitionsContainer = $this->container->getBehat_DefinitionsContainerService();
+        $definitionsContainer = $this->container->get('behat.definitions_container');
         foreach ($stepsPaths as $stepsPath) {
             if (is_dir($stepsPath)) {
                 foreach ($this->findDefinitionResources($stepsPath) as $path) {
@@ -105,26 +105,20 @@ class TestBundleCommand extends TestCommand
             }
         }
 
-        // Notify suite.run.before event
-        $this->container->getBehat_EventDispatcherService()->notify(new Event($this->container, 'suite.run.before'));
-        $timer = microtime(true);
+        // Notify suite.run.before event & start timer
+        $this->container->get('behat.event_dispatcher')->notify(new Event($this->container, 'suite.run.before'));
+        $this->container->get('behat.statistics_collector')->startTimer();
 
         // Run features
         $result = 0;
         foreach ($featuresContainer->getFeatures() as $feature) {
-            $tester = $this->container->getBehat_FeatureTesterService();
+            $tester = $this->container->get('behat.feature_tester');
             $result = max($result, $feature->accept($tester));
         }
 
         // Notify suite.run.after event
-        $this->container->getBehat_EventDispatcherService()->notify(new Event($this->container, 'suite.run.after', array(
-            'time' => ($timer = microtime(true) - $timer)
-        )));
-
-        // Print run time
-        if (null === $input->getOption('no-time') || !$input->getOption('no-time')) {
-            $output->writeln(sprintf("%.3fs", $timer));
-        }
+        $this->container->get('behat.statistics_collector')->finishTimer();
+        $this->container->get('behat.event_dispatcher')->notify(new Event($this->container, 'suite.run.after'));
 
         // Return exit code
         return intval(0 < $result);
