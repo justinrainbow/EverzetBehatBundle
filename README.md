@@ -29,7 +29,7 @@ GitHub and copy `src/Symfony/Component/Translation` directory inside your local 
     // src/autoload.php
     $loader->registerNamespaces(array(
         // ...
-        'Everzet' => $vendorDir . '/Behat/src',
+        'Everzet\\Behat' => $vendorDir . '/Behat/src',
         // ...
     ));
 
