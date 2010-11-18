@@ -81,6 +81,9 @@ class TestBundleCommand extends TestCommand
         // Set output service
         $this->container->get('behat.output_manager')->setOutput($output);
 
+        // Setup environment builder
+        $this->container->get('behat.environment_builder')->addEnvironmentFile($featuresPath . '/support/env.php');
+
         // Add hooks files paths to container resources list
         $hooksContainer = $this->container->get('behat.hooks_container');
         foreach ($hooksPath as $path) {
