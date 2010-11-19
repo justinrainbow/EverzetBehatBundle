@@ -3,16 +3,8 @@
 namespace Bundle\Everzet\BehatBundle\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Symfony\Bundle\FrameworkBundle\Command\Command;
-
-use Symfony\Component\EventDispatcher\Event;
-
-use Symfony\Component\Finder\Finder;
 
 /*
  * This file is part of the EverzetBehatBundle.
@@ -51,7 +43,7 @@ class TestBundleCommand extends TestCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->configureTestContainer($this->container, $input);
+        $this->configureTestContainer($this->container, $input, $output);
 
         if (!preg_match('/Bundle$/', $namespace = $input->getArgument('namespace'))) {
             throw new \InvalidArgumentException('The namespace must end with Bundle.');
@@ -74,56 +66,12 @@ class TestBundleCommand extends TestCommand
             );
         }
 
-        $featuresPath   = $basePath . '/Tests/Features';
-        $hooksPath      = array($featuresPath . '/support/hooks.php', __DIR__ . '/../Resources/features/support/hooks.php');
-        $stepsPaths     = array($featuresPath . '/steps', __DIR__ . '/../Resources/features/steps');
+        // Find features path
+        $featuresPath = $basePath . '/Tests/Features';
 
-        // Set output service
-        $this->container->get('behat.output_manager')->setOutput($output);
+        // Prepare features container
+        $featuresContainer = $this->prepareFeaturesContainer($this->findFeatureResources($featuresPath), $featuresPath);
 
-        // Setup environment builder
-        $this->container->get('behat.environment_builder')->addEnvironmentFile($featuresPath . '/support/env.php');
-
-        // Add hooks files paths to container resources list
-        $hooksContainer = $this->container->get('behat.hooks_container');
-        foreach ($hooksPath as $path) {
-            if (is_file($path)) {
-                $hooksContainer->addResource('php', $path);
-            }
-        }
-
-        // Add features paths to container resources list
-        $featuresContainer = $this->container->get('behat.features_container');
-        foreach ($this->findFeatureResources($featuresPath) as $path) {
-            $featuresContainer->addResource('gherkin', $path);
-        }
-
-        // Add definitions files to container resources list
-        $definitionsContainer = $this->container->get('behat.definitions_container');
-        foreach ($stepsPaths as $stepsPath) {
-            if (is_dir($stepsPath)) {
-                foreach ($this->findDefinitionResources($stepsPath) as $path) {
-                    $definitionsContainer->addResource('php', $path);
-                }
-            }
-        }
-
-        // Notify suite.run.before event & start timer
-        $this->container->get('behat.event_dispatcher')->notify(new Event($this->container, 'suite.run.before'));
-        $this->container->get('behat.statistics_collector')->startTimer();
-
-        // Run features
-        $result = 0;
-        foreach ($featuresContainer->getFeatures() as $feature) {
-            $tester = $this->container->get('behat.feature_tester');
-            $result = max($result, $feature->accept($tester));
-        }
-
-        // Notify suite.run.after event
-        $this->container->get('behat.statistics_collector')->finishTimer();
-        $this->container->get('behat.event_dispatcher')->notify(new Event($this->container, 'suite.run.after'));
-
-        // Return exit code
-        return intval(0 < $result);
+        return $this->runFeatures($featuresContainer);
     }
 }

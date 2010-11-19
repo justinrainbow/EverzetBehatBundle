@@ -3,10 +3,14 @@
 namespace Bundle\Everzet\BehatBundle\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\EventDispatcher\Event;
+
+use Everzet\Behat\Features\FeaturesContainer;
+
 use Symfony\Bundle\FrameworkBundle\Command\Command;
 
 /*
@@ -69,7 +73,7 @@ abstract class TestCommand extends Command
      * @param   Container       $container  container instance
      * @param   InputInterface  $input      input instance
      */
-    protected function configureTestContainer($container, InputInterface $input)
+    protected function configureTestContainer($container, InputInterface $input, OutputInterface $output)
     {
         if (null !== $input->getOption('name')) {
             $container->get('behat.name_filter')->setFilterString($input->getOption('name'));
@@ -95,6 +99,82 @@ abstract class TestCommand extends Command
         if (null !== $input->getOption('no-time')) {
             $container->get('behat.output_manager')->showTimer(!$input->getOption('no-time'));
         }
+
+        // Set output service
+        $this->container->get('behat.output_manager')->setOutput($output);
+    }
+
+    /**
+     * Prepare FeaturesContainer.
+     *
+     * Find feature, hooks & environment resources. 
+     * 
+     * @param   IteratorAggregate|array $features       array of feature files
+     * @param   string                  $featuresPath   features base path
+     *
+     * @return  FeaturesContainer
+     */
+    protected function prepareFeaturesContainer($features, $featuresPath)
+    {
+        $hooksPath      = array($featuresPath . '/support/hooks.php', __DIR__ . '/../Resources/features/support/hooks.php');
+        $stepsPaths     = array($featuresPath . '/steps', __DIR__ . '/../Resources/features/steps');
+
+        // Setup environment builder
+        $this->container->get('behat.environment_builder')->addEnvironmentFile($featuresPath . '/support/env.php');
+
+        // Add hooks files paths to container resources list
+        $hooksContainer = $this->container->get('behat.hooks_container');
+        foreach ($hooksPath as $path) {
+            if (is_file($path)) {
+                $hooksContainer->addResource('php', $path);
+            }
+        }
+
+        // Add features paths to container resources list
+        $featuresContainer = $this->container->get('behat.features_container');
+        foreach ($features as $feature) {
+            $featuresContainer->addResource('gherkin', $feature);
+        }
+
+        // Add definitions files to container resources list
+        $definitionsContainer = $this->container->get('behat.definitions_container');
+        foreach ($stepsPaths as $stepsPath) {
+            if (is_dir($stepsPath)) {
+                foreach ($this->findDefinitionResources($stepsPath) as $path) {
+                    $definitionsContainer->addResource('php', $path);
+                }
+            }
+        }
+
+        return $featuresContainer;
+    }
+
+    /**
+     * Run All Features in Container. 
+     * 
+     * @param   FeaturesContainer   $featuresContainer  features container to run
+     *
+     * @return  integer                                 return code
+     */
+    protected function runFeatures(FeaturesContainer $featuresContainer)
+    {
+        // Notify suite.run.before event & start timer
+        $this->container->get('behat.event_dispatcher')->notify(new Event($this->container, 'suite.run.before'));
+        $this->container->get('behat.statistics_collector')->startTimer();
+
+        // Run features
+        $result = 0;
+        foreach ($featuresContainer->getFeatures() as $feature) {
+            $tester = $this->container->get('behat.feature_tester');
+            $result = max($result, $feature->accept($tester));
+        }
+
+        // Notify suite.run.after event
+        $this->container->get('behat.statistics_collector')->finishTimer();
+        $this->container->get('behat.event_dispatcher')->notify(new Event($this->container, 'suite.run.after'));
+
+        // Return exit code
+        return intval(0 < $result);
     }
 
     /**
