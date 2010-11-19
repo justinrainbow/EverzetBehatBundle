@@ -38,10 +38,10 @@ class TestsController extends Controller
 
     public function submitAction()
     {
-        $data = $this['request']->request->all();
+        $data = $this->get('request')->request->all();
 
         return $this->render('Everzet\\BehatBundle\\Tests:Tests:submit.php', array(
-            'method'        => $this['request']->getMethod()
+            'method'        => $this->get('request')->getMethod()
           , 'name'          => $data['name']
           , 'age'           => $data['age']
           , 'speciality'    => $data['speciality']
