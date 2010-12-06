@@ -34,7 +34,7 @@ class SymfonyBrowserEnvironment extends WorldEnvironment
     public function __construct($container, array $kernelOptions = array(), array $serverParameters = array())
     {
         $world = $this;
-        $class = get_class($container->getKernelService());
+        $class = get_class($container->get('kernel'));
 
         $this->getClient = function() use ($world, $class, $kernelOptions, $serverParameters) {
             static $client;
@@ -68,7 +68,7 @@ class SymfonyBrowserEnvironment extends WorldEnvironment
         $this->kernel = $this->createKernel($kernelClass, $kernelOptions);
         $this->kernel->boot();
 
-        $client = $this->kernel->getContainer()->getTest_ClientService();
+        $client = $this->kernel->getContainer()->get('test.client');
         $client->setServerParameters($serverParameters);
         $client->followRedirects(false);
 

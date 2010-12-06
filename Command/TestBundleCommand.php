@@ -50,8 +50,7 @@ class TestBundleCommand extends TestCommand
         }
 
         $basePath = null;
-        foreach ($this->container->getKernelService()->getBundles() as $bundle)
-        {
+        foreach ($this->container->get('kernel')->getBundles() as $bundle) {
             $tmp = str_replace('\\', '/', get_class($bundle));
             $bundleNamespace = str_replace('/', '\\', dirname($tmp));
             if ($namespace === $bundleNamespace) {
