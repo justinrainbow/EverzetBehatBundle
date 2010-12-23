@@ -37,31 +37,31 @@ abstract class TestCommand extends Command
     {
         return array(
             new InputOption('--format',         '-f'
-              , InputOption::PARAMETER_REQUIRED
+              , InputOption::VALUE_REQUIRED
               , 'How to format features (Default: pretty). Available formats is pretty, progress, html.'
             ),
             new InputOption('--out',            '-o'
-              , InputOption::PARAMETER_REQUIRED
+              , InputOption::VALUE_REQUIRED
               , 'Write output to a file/directory instead of STDOUT.'
             ),
             new InputOption('--name',           '-N' 
-              , InputOption::PARAMETER_REQUIRED
+              , InputOption::VALUE_REQUIRED
               , 'Only execute the feature elements (features or scenarios) which match part of the given name.'
             ),
             new InputOption('--tags',           '-t'
-              , InputOption::PARAMETER_REQUIRED
+              , InputOption::VALUE_REQUIRED
               , 'Only execute the features or scenarios with tags matching expression.'
             ),
             new InputOption('--i18n',           '-i'
-              , InputOption::PARAMETER_REQUIRED
+              , InputOption::VALUE_REQUIRED
               , 'Print formatters output in particular language.'
             ),
             new InputOption('--no-colors',      '-C'
-              , InputOption::PARAMETER_NONE
+              , InputOption::VALUE_NONE
               , 'Do not use ANSI color in the output.'
             ),
             new InputOption('--no-time',        '-T'
-              , InputOption::PARAMETER_NONE
+              , InputOption::VALUE_NONE
               , 'Hide time statistics in output.'
             ),
         );
