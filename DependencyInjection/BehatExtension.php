@@ -4,6 +4,7 @@ namespace Bundle\Everzet\BehatBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /*
@@ -76,7 +77,7 @@ class BehatExtension extends Extension
         $reflection = new \ReflectionClass('Everzet\Behat\UniversalClassLoader');
         $container->setParameter('behat.lib.path', realpath(dirname($reflection->getFileName()) . '/../../../'));
 
-        $loader = new XmlFileLoader($container, $container->getParameter('behat.lib.path') . '/src/Everzet/Behat/ServiceContainer');
+        $loader = new XmlFileLoader($container, new FileLocator($container->getParameter('behat.lib.path') . '/src/Everzet/Behat/ServiceContainer'));
         $loader->load('container.xml');
         $loader->load(__DIR__ . '/../Resources/config/behat.xml');
     }
